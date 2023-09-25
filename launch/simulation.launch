@@ -1,0 +1,20 @@
+<launch>
+    <!-- Differential Drive Robot Kinematics -->
+    <arg name="dd_id_0" value="0"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_0)" type="dd_kinematics.py" output="screen" args="$(arg dd_id_0)">
+    </node>
+
+    <!-- Keyboard input -> cmd_vel -->
+    <arg name="robot_id" value="0"/>
+    <node pkg="mpc_flock" name="cmd_vel_keyboard" type="cmd_vel_keyboard.py" output="screen" args="$(arg robot_id)">
+    </node>
+
+    <!-- Plotter -->
+    <param name="xlim_min" value="-5.0"/>
+    <param name="xlim_max" value="5.0"/>
+    <param name="ylim_min" value="-5.0"/>
+    <param name="ylim_max" value="5.0"/>
+    <param name="num_robots" value="4"/>
+    <node pkg="mpc_flock" name="planar_simulation" type="planar_simulation.py" output="screen">
+    </node>
+</launch>
