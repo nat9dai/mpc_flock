@@ -1,7 +1,54 @@
 <launch>
+    <!-- Publishing Graph topology matrix -->
+    <node pkg="mpc_flock" name="graph_topology" type="graph_topology.py" output="screen">
+    </node>
+
     <!-- Differential Drive Robot Kinematics -->
     <arg name="dd_id_0" value="0"/>
-    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_0)" type="dd_kinematics.py" output="screen" args="$(arg dd_id_0)">
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_0)" type="dd_kinematics" output="screen" args="$(arg dd_id_0)">
+        <param name="init_x_$(arg dd_id_0)" value="0.0"/>
+        <param name="init_y_$(arg dd_id_0)" value="0.0"/>
+        <param name="init_theta_$(arg dd_id_0)" value="0.0"/>
+    </node>
+    <arg name="dd_id_1" value="1"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_1)" type="dd_kinematics" output="screen" args="$(arg dd_id_1)">
+        <param name="init_x_$(arg dd_id_1)" value="5.0"/>
+        <param name="init_y_$(arg dd_id_1)" value="0.0"/>
+        <param name="init_theta_$(arg dd_id_1)" value="0.0"/>
+    </node>
+    <node pkg="mpc_flock" name="simple_flock_$(arg dd_id_1)" type="simple_flock.py" output="screen" args="$(arg dd_id_1)">
+    </node>
+    <arg name="dd_id_2" value="2"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_2)" type="dd_kinematics" output="screen" args="$(arg dd_id_2)">
+        <param name="init_x_$(arg dd_id_2)" value="0.0"/>
+        <param name="init_y_$(arg dd_id_2)" value="5.0"/>
+        <param name="init_theta_$(arg dd_id_2)" value="0.0"/>
+    </node>
+    <node pkg="mpc_flock" name="simple_flock_$(arg dd_id_2)" type="simple_flock.py" output="screen" args="$(arg dd_id_2)">
+    </node>
+    <arg name="dd_id_3" value="3"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_3)" type="dd_kinematics" output="screen" args="$(arg dd_id_3)">
+        <param name="init_x_$(arg dd_id_3)" value="-5.0"/>
+        <param name="init_y_$(arg dd_id_3)" value="0.0"/>
+        <param name="init_theta_$(arg dd_id_3)" value="0.0"/>
+    </node>
+    <node pkg="mpc_flock" name="simple_flock_$(arg dd_id_3)" type="simple_flock.py" output="screen" args="$(arg dd_id_3)">
+    </node>
+    <arg name="dd_id_4" value="4"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_4)" type="dd_kinematics" output="screen" args="$(arg dd_id_4)">
+        <param name="init_x_$(arg dd_id_4)" value="0.0"/>
+        <param name="init_y_$(arg dd_id_4)" value="-5.0"/>
+        <param name="init_theta_$(arg dd_id_4)" value="0.0"/>
+    </node>
+    <node pkg="mpc_flock" name="simple_flock_$(arg dd_id_4)" type="simple_flock.py" output="screen" args="$(arg dd_id_4)">
+    </node>
+    <arg name="dd_id_5" value="5"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_5)" type="dd_kinematics" output="screen" args="$(arg dd_id_5)">
+        <param name="init_x_$(arg dd_id_5)" value="5.0"/>
+        <param name="init_y_$(arg dd_id_5)" value="5.0"/>
+        <param name="init_theta_$(arg dd_id_5)" value="0.0"/>
+    </node>
+    <node pkg="mpc_flock" name="simple_flock_$(arg dd_id_5)" type="simple_flock.py" output="screen" args="$(arg dd_id_5)">
     </node>
 
     <!-- Keyboard input -> cmd_vel -->
@@ -10,11 +57,13 @@
     </node>
 
     <!-- Plotter -->
-    <param name="xlim_min" value="-5.0"/>
-    <param name="xlim_max" value="5.0"/>
-    <param name="ylim_min" value="-5.0"/>
-    <param name="ylim_max" value="5.0"/>
-    <param name="num_robots" value="4"/>
+    <!--param name="xlim_min" value="-7.5"/>
+    <param name="xlim_max" value="11.5"/>
+    <param name="ylim_min" value="-1.5"/>
+    <param name="ylim_max" value="14.5"/-->
+    <param name="num_robots" value="6"/>
+    <param name="num_leaders" value="1"/>
+    <param name="num_followers" value="5"/>
     <node pkg="mpc_flock" name="planar_simulation" type="planar_simulation.py" output="screen">
     </node>
 </launch>

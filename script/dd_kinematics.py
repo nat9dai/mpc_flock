@@ -13,15 +13,17 @@ class DifferentialDriveKinemetics:
         self.id = sys.argv[1]
         rospy.init_node('dd_kinemetics_{}'.format(self.id))
 
-        self.cmd_vel_sub = rospy.Subscriber('cmd_vel_{}'.format(self.id), Twist, self.cmd_vel_callback)
+        self.cmd_vel_sub = rospy.Subscriber('/robot_{}/cmd_vel'.format(self.id), Twist, self.cmd_vel_callback)
         self.odom_pub = rospy.Publisher('/robot_{}/odom'.format(self.id), Odometry, queue_size=10)
 
         self.odom = Odometry()
         self.odom.header.frame_id = 'odom'
         self.odom.child_frame_id = 'base_link_{}'.format(self.id)
-        self.x = 0.0
-        self.y = 0.0
-        self.theta = 0.0
+        self.x = rospy.get_param('init_x_{}'.format(self.id), 0.0)
+        self.y = rospy.get_param('init_y_{}'.format(self.id), 0.0)
+        self.theta = rospy.get_param('init_theta_{}'.format(self.id), 0.0)
+        self.limit_v = rospy.get_param('limit_v', 1.0)
+        self.limit_w = rospy.get_param('limit_w', 1.0)
         self.last_time = rospy.Time.now()
 
         self.rate = rospy.Rate(80)
@@ -32,6 +34,18 @@ class DifferentialDriveKinemetics:
 
         linear_velocity = twist_msg.linear.x
         angular_velocity = twist_msg.angular.z
+
+        # Limiting linear velocity
+        if linear_velocity > self.limit_v:
+            linear_velocity = self.limit_v
+        elif linear_velocity < -self.limit_v:
+            linear_velocity = -self.limit_v
+
+        # Limiting angular velocity
+        if angular_velocity > self.limit_w:
+            angular_velocity = self.limit_w
+        elif angular_velocity < -self.limit_w:
+            angular_velocity = -self.limit_w
 
         delta_theta = angular_velocity * delta_time
         delta_x = linear_velocity * math.cos(self.theta) * delta_time

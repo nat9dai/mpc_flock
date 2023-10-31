@@ -11,7 +11,7 @@ robot_id = sys.argv[1]
 rospy.init_node('cmd_vel_keyboard')
 
 # Create a publisher for the cmd_vel topic
-pub = rospy.Publisher('cmd_vel_{}'.format(robot_id), Twist, queue_size=10)
+pub = rospy.Publisher('/robot_{}/cmd_vel'.format(robot_id), Twist, queue_size=10)
 
 # Set the publishing rate to 60 Hz
 rate = rospy.Rate(100)
@@ -21,8 +21,8 @@ twist_msg = Twist()
 
 # Define the key mapping for arrow keys
 key_mapping = {
-    keyboard.Key.up: (1.0, 0.0),
-    keyboard.Key.down: (-1.0, 0.0),
+    keyboard.Key.up: (2.0, 0.0),
+    keyboard.Key.down: (-2.0, 0.0),
     keyboard.Key.left: (0.0, 1.0),
     keyboard.Key.right: (0.0, -1.0)
 }
