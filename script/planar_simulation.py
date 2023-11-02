@@ -29,7 +29,7 @@ class RobotPlotter:
 
         # Setup initial plot
         self.fig, self.ax = plt.subplots()
-        self.rate = rospy.Rate(30)
+        self.rate = rospy.Rate(60)
         self.map = Map()
 
     def odometry_callback(self, msg, robot_index):
@@ -58,14 +58,17 @@ class RobotPlotter:
         self.ax.set(xlim=(self.xlim_min, self.xlim_max), ylim=(self.ylim_min, self.ylim_max),
                     title='Robot Positions and Orientations', xlabel='X Position (m)', ylabel='Y Position (m)')
         for idx, ((x, y), yaw) in enumerate(zip(self.robot_positions, self.robot_orientations)):
-            color = 'red' if idx == 0 else 'blue'
+            if (idx == 0): color = 'red'
+            elif (idx == 5): color = 'green'
+            else: color = 'blue'
+            #color = 'red' if idx == 0 else 'blue'
             self.ax.add_patch(self.create_robot_triangle(x, y, yaw, color))
 
     def run(self):
         plt.ion()  # Enable interactive mode for real-time plotting
         while not rospy.is_shutdown():
             self.update_plot()
-            plt.pause(0.03)
+            plt.pause(0.01)
             self.rate.sleep()
 
     def plot_obstacles(self):

@@ -22,8 +22,8 @@ class ConsensusProtocol:
 
         self.pub_cmd_vel = rospy.Publisher('robot_{}/cmd_vel'.format(self.id), Twist, queue_size=10)
         self.twist_msg = Twist()
-        self.Kv = 2.5
-        self.Kh = 2.5
+        self.Kv = 1.0
+        self.Kh = 3.0
         self.delta = 1.0
 
         self.robot_positions = np.zeros((self.num_robots,2))
@@ -75,7 +75,7 @@ class ConsensusProtocol:
 if __name__ == "__main__":
     try:
         consensus_protocol = ConsensusProtocol()
-        rate = rospy.Rate(60)
+        rate = rospy.Rate(100)
         while not rospy.is_shutdown():
             consensus_protocol.pubControlLaw()
             rate.sleep()

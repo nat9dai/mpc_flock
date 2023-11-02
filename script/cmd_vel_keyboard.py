@@ -23,8 +23,8 @@ twist_msg = Twist()
 key_mapping = {
     keyboard.Key.up: (2.0, 0.0),
     keyboard.Key.down: (-2.0, 0.0),
-    keyboard.Key.left: (0.0, 1.0),
-    keyboard.Key.right: (0.0, -1.0)
+    keyboard.Key.left: (0.0, 3.14),
+    keyboard.Key.right: (0.0, -3.14)
 }
 
 # Initialize the velocity values

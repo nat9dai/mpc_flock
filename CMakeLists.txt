@@ -14,7 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   tf
+  cv_bridge
+  sensor_msgs
 )
+
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -106,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES mpc_flock
-  CATKIN_DEPENDS roscpp rospy message_runtime geometry_msgs
+  CATKIN_DEPENDS roscpp rospy message_runtime geometry_msgs nav_msgs cv_bridge sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -119,6 +123,8 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -137,6 +143,7 @@ include_directories(
 add_executable(dd_kinematics src/dd_kinematics.cpp)
 add_executable(simple_flock src/simple_flock.cpp)
 add_executable(cmd_vel_keyboard src/cmd_vel_keyboard.cpp)
+add_executable(planar_simulation src/planar_simulation.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -155,6 +162,7 @@ add_executable(cmd_vel_keyboard src/cmd_vel_keyboard.cpp)
 target_link_libraries(dd_kinematics ${catkin_LIBRARIES})
 target_link_libraries(simple_flock ${catkin_LIBRARIES})
 target_link_libraries(cmd_vel_keyboard ${catkin_LIBRARIES} ncurses)
+target_link_libraries(planar_simulation ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 #############
 ## Install ##

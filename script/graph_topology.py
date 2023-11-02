@@ -6,6 +6,15 @@ import rospy
 import numpy as np
 from std_msgs.msg import Int32MultiArray, MultiArrayDimension
 
+"""
+            [0, 0, 0, 0, 0, 0],
+            [2, 0, 0, 0, 0, 1],
+            [2, 1, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0]
+"""
+
 def adjacency_publisher():
     rospy.init_node('graph_topology')
     pub = rospy.Publisher('adjacency_matrix', Int32MultiArray, queue_size=10)
@@ -16,10 +25,10 @@ def adjacency_publisher():
         # Adjust size and values as required for your multi-agent system
         adjacency_matrix = np.array([
             [0, 0, 0, 0, 0, 0],
-            [2, 0, 0, 0, 0, 1],
-            [2, 1, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 0],
-            [0, 0, 1, 0, 0, 0],
+            [3, 0, 0, 0, 0, 1],
+            [3, 2, 0, 0, 0, 0],
+            [0, 2, 0, 0, 0, 0],
+            [0, 0, 2, 0, 0, 0],
             [0, 0, 0, 1, 1, 0]
         ])
         

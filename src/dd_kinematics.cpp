@@ -2,12 +2,15 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
 
 class DifferentialDriveKinematics {
 private:
     ros::NodeHandle nh_;
     ros::Subscriber cmd_vel_sub_;
     ros::Publisher odom_pub_;
+    tf::TransformBroadcaster tf_broadcaster_;
+    tf::Transform transform_;
     nav_msgs::Odometry odom_;
     double x_, y_, theta_;
     double limit_v_, limit_w_;
@@ -19,7 +22,7 @@ private:
     }
 
 public:
-    DifferentialDriveKinematics(int argc, char** argv) : nh_("~"), rate_(80) {
+    DifferentialDriveKinematics(int argc, char** argv) : nh_("~"), rate_(100) {
         std::string id;
         if (argc >= 2){
             id = argv[1];
@@ -39,8 +42,8 @@ public:
         nh_.param("init_x_" + id, x_, 0.0);
         nh_.param("init_y_" + id, y_, 0.0);
         nh_.param("init_theta_" + id, theta_, 0.0);
-        nh_.param("limit_v", limit_v_, 1.5);
-        nh_.param("limit_w", limit_w_, 1.5);
+        nh_.param("limit_v", limit_v_, 2.0);
+        nh_.param("limit_w", limit_w_, 13.3);
 
         last_time_ = ros::Time::now();
 
@@ -49,7 +52,15 @@ public:
 
         odom_.pose.pose.position.x = x_;
         odom_.pose.pose.position.y = y_;
-        odom_.pose.pose.orientation = odom_quat;       
+        odom_.pose.pose.orientation = odom_quat;   
+
+        // Broadcasting the initial TF
+        tf::Transform transform;
+        transform.setOrigin(tf::Vector3(x_, y_, 0.0));
+        tf::Quaternion q;
+        q.setRPY(0, 0, theta_);
+        transform.setRotation(q);
+        tf_broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", odom_.child_frame_id));    
     }
 
     void cmdVelCallback(const geometry_msgs::Twist& twist_msg) {
@@ -77,12 +88,21 @@ public:
         odom_.twist.twist.linear.x = linear_velocity;
         odom_.twist.twist.angular.z = angular_velocity;
 
+        // Broadcasting TF after updating the pose
+        //tf::Transform transform;
+        transform_.setOrigin(tf::Vector3(x_, y_, 0.0));
+        tf::Quaternion q;
+        q.setRPY(0, 0, theta_);
+        transform_.setRotation(q);
+        tf_broadcaster_.sendTransform(tf::StampedTransform(transform_, ros::Time::now(), "odom", odom_.child_frame_id));
+
         last_time_ = current_time;
     }
 
     void spin() {
         while (ros::ok()) {
             odom_pub_.publish(odom_);
+            
             rate_.sleep();
             ros::spinOnce();
         }
