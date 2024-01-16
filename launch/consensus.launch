@@ -1,0 +1,30 @@
+<launch>
+    <!-- Static transform from map to odom -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom_broadcaster"
+          args="0 0 0 0 0 0 map odom" />
+
+    <param name="num_robots" value="6"/>
+    <param name="num_leaders" value="1"/>
+    <param name="num_followers" value="5"/>
+
+    <!-- Publishing Graph topology matrix -->
+    <node pkg="mpc_flock" name="graph_topology" type="graph_topology.py" output="screen">
+    </node>
+
+    <!-- Percent of Data Loss (0 - 100) -->
+    <param name="data_loss" value="0"/>
+    <param name="plot_time" value="40"/>
+    <!-- Launch simulated agents -->
+    <!--include file="$(find mpc_flock)/launch/agents_simple_consensus.launch" /-->
+    <include file="$(find mpc_flock)/launch/agents_simple_mpc_consensus.launch" />
+
+    <!-- Plotter -->
+    <!--param name="xlim_min" value="-7.5"/>
+    <param name="xlim_max" value="11.5"/>
+    <param name="ylim_min" value="-1.5"/>
+    <param name="ylim_max" value="14.5"/-->
+    <node pkg="mpc_flock" name="planar_simulation" type="planar_simulation.py" output="screen">
+    </node>
+    <!--node pkg="mpc_flock" name="plot" type="plot.py" output="screen">
+    </node-->
+</launch>

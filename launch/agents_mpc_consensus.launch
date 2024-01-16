@@ -1,0 +1,116 @@
+<launch>
+    <!-- Differential Drive Robot Kinematics -->
+    <arg name="dd_id_0" value="0"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_0)" type="dd_kinematics" output="screen" args="$(arg dd_id_0)">
+        <param name="init_x_$(arg dd_id_0)" value="-4.0"/>
+        <param name="init_y_$(arg dd_id_0)" value="2.0"/>
+        <param name="init_theta_$(arg dd_id_0)" value="1.57"/>
+    </node>
+
+    <arg name="dd_id_1" value="1"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_1)" type="dd_kinematics" output="screen" args="$(arg dd_id_1)">
+        <param name="init_x_$(arg dd_id_1)" value="0.0"/>
+        <param name="init_y_$(arg dd_id_1)" value="-4.0"/>
+        <param name="init_theta_$(arg dd_id_1)" value="1.0"/>
+    </node>
+
+    <arg name="dd_id_2" value="2"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_2)" type="dd_kinematics" output="screen" args="$(arg dd_id_2)">
+        <param name="init_x_$(arg dd_id_2)" value="4.5"/>
+        <param name="init_y_$(arg dd_id_2)" value="2.1"/>
+        <param name="init_theta_$(arg dd_id_2)" value="3.1"/>
+    </node>
+
+    <arg name="dd_id_3" value="3"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_3)" type="dd_kinematics" output="screen" args="$(arg dd_id_3)">
+        <param name="init_x_$(arg dd_id_3)" value="4.0"/>
+        <param name="init_y_$(arg dd_id_3)" value="-4.0"/>
+        <param name="init_theta_$(arg dd_id_3)" value="2.0"/>
+    </node>
+
+    <arg name="dd_id_4" value="4"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_4)" type="dd_kinematics" output="screen" args="$(arg dd_id_4)">
+        <param name="init_x_$(arg dd_id_4)" value="-1.0"/>
+        <param name="init_y_$(arg dd_id_4)" value="-3.4"/>
+        <param name="init_theta_$(arg dd_id_4)" value="1.7"/>
+    </node>
+
+    <arg name="dd_id_5" value="5"/>
+    <node pkg="mpc_flock" name="dd_kinematics_$(arg dd_id_5)" type="dd_kinematics" output="screen" args="$(arg dd_id_5)">
+        <param name="init_x_$(arg dd_id_5)" value="-4.0"/>
+        <param name="init_y_$(arg dd_id_5)" value="-4.0"/>
+        <param name="init_theta_$(arg dd_id_5)" value="1.2"/>
+    </node>
+
+    <node pkg="mpc_flock" name="data_preparation_$(arg dd_id_0)" type="data_preparation" output="screen" args="$(arg dd_id_0)">
+    </node>
+    <node name="distributed_nmpc_controller_$(arg dd_id_0)"
+            pkg="distributed_nmpc_controller"
+            type="distributed_nmpc_controller_node"
+            respawn="true"
+            clear_params="true"
+            output="screen"
+            args="$(arg dd_id_0)">
+        <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+    </node>
+
+    <node pkg="mpc_flock" name="data_preparation_$(arg dd_id_1)" type="data_preparation" output="screen" args="$(arg dd_id_1)">
+    </node>
+    <node name="distributed_nmpc_controller_$(arg dd_id_1)"
+            pkg="distributed_nmpc_controller"
+            type="distributed_nmpc_controller_node"
+            respawn="true"
+            clear_params="true"
+            output="screen"
+            args="$(arg dd_id_1)">
+        <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+    </node>
+
+    <node pkg="mpc_flock" name="data_preparation_$(arg dd_id_2)" type="data_preparation" output="screen" args="$(arg dd_id_2)">
+    </node>
+    <node name="distributed_nmpc_controller_$(arg dd_id_2)"
+            pkg="distributed_nmpc_controller"
+            type="distributed_nmpc_controller_node"
+            respawn="true"
+            clear_params="true"
+            output="screen"
+            args="$(arg dd_id_2)">
+        <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+    </node>
+
+    <node pkg="mpc_flock" name="data_preparation_$(arg dd_id_3)" type="data_preparation" output="screen" args="$(arg dd_id_3)">
+    </node>
+    <node name="distributed_nmpc_controller_$(arg dd_id_3)"
+            pkg="distributed_nmpc_controller"
+            type="distributed_nmpc_controller_node"
+            respawn="true"
+            clear_params="true"
+            output="screen"
+            args="$(arg dd_id_3)">
+        <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+    </node>
+
+    <node pkg="mpc_flock" name="data_preparation_$(arg dd_id_4)" type="data_preparation" output="screen" args="$(arg dd_id_4)">
+    </node>
+    <node name="distributed_nmpc_controller_$(arg dd_id_4)"
+            pkg="distributed_nmpc_controller"
+            type="distributed_nmpc_controller_node"
+            respawn="true"
+            clear_params="true"
+            output="screen"
+            args="$(arg dd_id_4)">
+        <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+    </node>
+
+    <node pkg="mpc_flock" name="data_preparation_$(arg dd_id_5)" type="data_preparation" output="screen" args="$(arg dd_id_5)">
+    </node>
+    <node name="distributed_nmpc_controller_$(arg dd_id_5)"
+            pkg="distributed_nmpc_controller"
+            type="distributed_nmpc_controller_node"
+            respawn="true"
+            clear_params="true"
+            output="screen"
+            args="$(arg dd_id_5)">
+        <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+    </node>
+</launch>

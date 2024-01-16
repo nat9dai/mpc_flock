@@ -3,33 +3,49 @@
 # This node publishes the Adjacency matrix
 
 import rospy
+import random
 import numpy as np
 from std_msgs.msg import Int32MultiArray, MultiArrayDimension
 
 """
-            [0, 0, 0, 0, 0, 0],
-            [2, 0, 0, 0, 0, 1],
-            [2, 1, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0],
+            [1, 0, 0, 0, 0, 1],
+            [1, 1, 0, 0, 0, 0],
             [0, 1, 0, 0, 0, 0],
             [0, 0, 1, 0, 0, 0],
             [0, 0, 0, 1, 1, 0]
-"""
 
-def adjacency_publisher():
-    rospy.init_node('graph_topology')
-    pub = rospy.Publisher('adjacency_matrix', Int32MultiArray, queue_size=10)
-    rate = rospy.Rate(10)  # 1Hz
-    
-    while not rospy.is_shutdown():
-        # Sample 3x3 adjacency matrix for demonstration
-        # Adjust size and values as required for your multi-agent system
-        adjacency_matrix = np.array([
-            [0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0],
             [3, 0, 0, 0, 0, 1],
             [3, 2, 0, 0, 0, 0],
             [0, 2, 0, 0, 0, 0],
             [0, 0, 2, 0, 0, 0],
             [0, 0, 0, 1, 1, 0]
+
+            [0, 0, sim_loss(loss_rate), 0, 0, 0],
+            [sim_loss(loss_rate), 0, 0, 0, 0, sim_loss(loss_rate)],
+            [sim_loss(loss_rate), sim_loss(loss_rate), 0, 0, 0, 0],
+            [0, sim_loss(loss_rate), 0, 0, 0, 0],
+            [0, 0, sim_loss(loss_rate), 0, 0, 0],
+            [0, 0, 0, sim_loss(loss_rate), sim_loss(loss_rate), 0]
+"""
+
+def adjacency_publisher():
+    rospy.init_node('graph_topology')
+    pub = rospy.Publisher('adjacency_matrix', Int32MultiArray, queue_size=10)
+    rate = rospy.Rate(30)  # 1Hz
+
+    loss_rate = 0.3
+    
+    while not rospy.is_shutdown():
+        adjacency_matrix = np.array([
+            [0, 0, 1, 0, 0, 0],
+            [3, 0, 0, 0, 0, 1],
+            [3, 2, 0, 0, 0, 0],
+            [0, 2, 0, 0, 0, 0],
+            [0, 0, 2, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0]
+
         ])
         
         # Prepare the message
@@ -48,6 +64,27 @@ def adjacency_publisher():
         # Publish the message
         pub.publish(msg)
         rate.sleep()
+
+
+def sim_loss(loss_rate):
+    """
+    Simulates data loss based on a given loss rate.
+
+    Parameters:
+    loss_rate (int): The data loss rate as an integer from 0 to 100.
+
+    Returns:
+    int: 0 if data is lost, 1 if data is not lost.
+    """
+    if not 0 <= loss_rate <= 1.0:
+        raise ValueError("Loss rate must be between 0 and 100")
+
+    # Convert loss rate to probability
+    probability = loss_rate
+
+    # Simulate data loss using the random module
+    # The random() function generates a float number between 0 and 1.
+    return 1 if random.random() >= probability else 0
 
 if __name__ == '__main__':
     try:

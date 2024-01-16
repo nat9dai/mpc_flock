@@ -1,0 +1,2 @@
+float64[] robot_state
+float64[] goal

@@ -14,11 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   tf
-  cv_bridge
   sensor_msgs
+  message_generation
 )
 
-find_package(OpenCV REQUIRED)
+# find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -54,9 +54,10 @@ find_package(OpenCV REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-# )
+add_message_files(
+  FILES
+  RobotStateAndGoal.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -73,10 +74,10 @@ find_package(OpenCV REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -110,7 +111,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES mpc_flock
-  CATKIN_DEPENDS roscpp rospy message_runtime geometry_msgs nav_msgs cv_bridge sensor_msgs
+  CATKIN_DEPENDS roscpp rospy message_runtime geometry_msgs nav_msgs sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
@@ -123,8 +124,6 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -142,8 +141,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(dd_kinematics src/dd_kinematics.cpp)
 add_executable(simple_flock src/simple_flock.cpp)
-add_executable(cmd_vel_keyboard src/cmd_vel_keyboard.cpp)
-add_executable(planar_simulation src/planar_simulation.cpp)
+add_executable(data_preparation src/data_preparation.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -161,8 +159,7 @@ add_executable(planar_simulation src/planar_simulation.cpp)
 # )
 target_link_libraries(dd_kinematics ${catkin_LIBRARIES})
 target_link_libraries(simple_flock ${catkin_LIBRARIES})
-target_link_libraries(cmd_vel_keyboard ${catkin_LIBRARIES} ncurses)
-target_link_libraries(planar_simulation ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(data_preparation ${catkin_LIBRARIES})
 
 #############
 ## Install ##

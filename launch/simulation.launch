@@ -11,8 +11,12 @@
     <node pkg="mpc_flock" name="graph_topology" type="graph_topology.py" output="screen">
     </node>
 
+    <param name="data_loss" value="0"/>
+    <param name="plot_time" value="10"/>
     <!-- Launch simulated agents -->
-    <include file="$(find mpc_flock)/launch/agents.launch" />
+    <!--include file="$(find mpc_flock)/launch/agents_simple_flock.launch" /-->
+    <!--include file="$(find mpc_flock)/launch/agents_mpc.launch" /-->
+    <include file="$(find mpc_flock)/launch/agents_simple_mpc.launch" />
 
     <!-- Keyboard input -> cmd_vel -->
     <arg name="robot_id" value="0"/>

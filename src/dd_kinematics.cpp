@@ -3,6 +3,7 @@
 #include <nav_msgs/Odometry.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
+#include <nav_msgs/Path.h>
 
 class DifferentialDriveKinematics {
 private:
@@ -17,9 +18,21 @@ private:
     ros::Time last_time_;
     ros::Rate rate_;
 
+    int robot_id_;
+    int T_;
+    double dt;
+
     double clamp(double val, double min_val, double max_val) {
         return std::max(min_val, std::min(val, max_val));
     }
+    
+    struct Pose {
+        double x;
+        double y;
+        double theta;
+    };
+    Pose current_pose;
+    ros::Publisher path_pub;
 
 public:
     DifferentialDriveKinematics(int argc, char** argv) : nh_("~"), rate_(100) {
@@ -61,6 +74,13 @@ public:
         q.setRPY(0, 0, theta_);
         transform.setRotation(q);
         tf_broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", odom_.child_frame_id));    
+    
+        if (id == "0"){
+            path_pub = nh_.advertise<nav_msgs::Path>("/robot_" + id + "/traj_data", 10);
+            robot_id_ = std::stoi(id);
+            T_ = 10;
+            dt = 0.01;
+        }
     }
 
     void cmdVelCallback(const geometry_msgs::Twist& twist_msg) {
@@ -94,9 +114,43 @@ public:
         tf::Quaternion q;
         q.setRPY(0, 0, theta_);
         transform_.setRotation(q);
-        tf_broadcaster_.sendTransform(tf::StampedTransform(transform_, ros::Time::now(), "odom", odom_.child_frame_id));
+        //tf_broadcaster_.sendTransform(tf::StampedTransform(transform_, ros::Time::now(), "odom", odom_.child_frame_id));
 
         last_time_ = current_time;
+
+        if (robot_id_ == 0){
+            nav_msgs::Path path;
+            path.header.stamp = current_time;
+            path.header.frame_id = "odom";
+
+            current_pose.x = x_;
+            current_pose.y = y_;
+            current_pose.theta = theta_;
+
+            ros::Duration ros_dt(dt);
+
+            for (int i=0; i < T_; i++){
+                double dx = linear_velocity * cos(current_pose.theta)*dt;
+                double dy = linear_velocity * sin(current_pose.theta)*dt;
+                double dtheta = angular_velocity * dt;
+
+                current_pose.x += dx;
+                current_pose.y += dy;
+                current_pose.theta += dtheta;
+                current_pose.theta = fmod(current_pose.theta + M_PI, 2 * M_PI) - M_PI;
+
+                geometry_msgs::PoseStamped new_pose;
+                new_pose.header.stamp = current_time + ros_dt * i;
+                new_pose.header.frame_id = odom_.child_frame_id;
+                new_pose.pose.position.x = current_pose.x;
+                new_pose.pose.position.y = current_pose.y;
+                tf::quaternionTFToMsg(tf::createQuaternionFromYaw(current_pose.theta), new_pose.pose.orientation);
+
+                path.poses.push_back(new_pose);
+            }
+            path_pub.publish(path);
+        }
+        tf_broadcaster_.sendTransform(tf::StampedTransform(transform_, ros::Time::now(), "odom", odom_.child_frame_id));
     }
 
     void spin() {

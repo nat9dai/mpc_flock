@@ -1,0 +1,10 @@
+<launch>
+  <node name="distributed_nmpc_controller"
+        pkg="distributed_nmpc_controller"
+        type="distributed_nmpc_controller_node"
+        respawn="true"
+        clear_params="true"
+        output="screen">
+    <rosparam file="$(find distributed_nmpc_controller)/config/open_params.yaml" />
+  </node>
+</launch>
